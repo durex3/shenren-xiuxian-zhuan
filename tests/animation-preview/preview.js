@@ -8,6 +8,11 @@ const sequence = (base, prefix, count) => Array.from({length: count}, (_, i) => 
 const playerIdle = `${player}player_battle_idle_base.png`;
 const spiderIdle = `${spider}idle/red_jade_spider_battle_idle.png`;
 const spiderAttackFrames = [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`];
+const spiderDeathFrames = sequence(`${spider}death/frames/`, 'red_jade_spider_death_', 4);
+const spiderDeathEffectFrames = sequence(`${spider}death/effects/`, 'red_jade_spider_death_fx_', 4);
+const spiderDeathEffectStart = 1 + spiderDeathFrames.length;
+// 特效播放期间保持最终倒地姿势，身体和灵光分别控制，避免用特效图替换角色。
+const spiderDeathTimeline = [spiderIdle, ...spiderDeathFrames, ...spiderDeathEffectFrames.map(() => spiderDeathFrames.at(-1))];
 // 所有一次性战斗动作都自动添加“待机→动作→待机”，避免切换时跳帧。
 const battleAction = (idle, frames, returnToIdle = true) => [idle, ...frames, ...(returnToIdle ? [idle] : [])];
 const actors = {
@@ -27,6 +32,7 @@ const actors = {
     defense: battleAction(spiderIdle, [`${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`], false),
     hit: battleAction(spiderIdle, sequence(`${spider}hit/frames/`, 'red_jade_spider_hit_', 3)),
     cast: battleAction(spiderIdle, spiderAttackFrames),
+    death: spiderDeathTimeline,
     escape: battleAction(spiderIdle, sequence(`${spider}escape/frames/`, 'red_jade_spider_escape_', 4), false),
   },
 };
@@ -65,7 +71,7 @@ for (const [id, direction] of [['prev', -1], ['next', 1]]) {
 class PreviewScene extends Phaser.Scene {
   preload() {
     // URL 同时作为纹理键，待机等重复引用的文件只加载一次。
-    const files = new Set([...Object.values(actors).flatMap(actions => Object.values(actions).flat()), ...Object.values(effectFiles)]);
+    const files = new Set([...Object.values(actors).flatMap(actions => Object.values(actions).flat()), ...Object.values(effectFiles), ...spiderDeathEffectFrames]);
     this.load.on('loaderror', file => { ui.errors.textContent += `加载失败：${file.key}\n`; });
     for (const url of files) this.load.image(url, url);
   }
@@ -104,6 +110,7 @@ class PreviewScene extends Phaser.Scene {
       image.setScale(boxSize / Math.max(source.width, source.height)).setFlipX(ui.flip.checked);
     };
     fit(this.body, frames[frame], size);
+    this.body.setAlpha(1);
     fit(this.reference, actors[ui.actor.value].idle[0], size);
     this.reference.setVisible(ui.ghost.checked);
     const shieldType = ui.shield.value === 'auto' ? (ui.action.value === 'defense' && frame > 0 ? 'idle' : 'off') : ui.shield.value;
@@ -111,16 +118,24 @@ class PreviewScene extends Phaser.Scene {
     if(shieldType !== 'off') fit(this.shield, effectFiles[`${shieldType}Shield`], size * 1.25);
     // 特效与角色分层。攻击后半段演示飞行和命中，不将特效烘焙进动作帧。
     const attacking = ui.effects.checked && ui.action.value === 'attack' && frame >= 2;
-    this.fx.setVisible(attacking);
+    const deathEffectIndex = frame - spiderDeathEffectStart;
+    const dying = ui.effects.checked && ui.actor.value === 'spider' && ui.action.value === 'death' && deathEffectIndex >= 0;
+    this.fx.setVisible(attacking || dying);
     if(attacking) {
+      this.fx.setBlendMode(Phaser.BlendModes.NORMAL);
       const impact = frame === frames.length - 1;
       const isSpider = ui.actor.value === 'spider';
       fit(this.fx, effectFiles[isSpider ? (impact ? 'impact' : 'web') : (impact ? 'hit' : 'wind')], impact ? 170 : 240);
       const progress = Math.min(1, (frame - 2 + elapsed / (1000 / Number(ui.fps.value))) / Math.max(1, frames.length - 3));
       this.fx.setPosition(impact ? 180 : Phaser.Math.Linear(610, 180, progress), 300);
+    } else if(dying) {
+      this.fx.setBlendMode(Phaser.BlendModes.ADD);
+      fit(this.fx, spiderDeathEffectFrames[deathEffectIndex], size * 1.3);
+      this.fx.setPosition(750, 275);
+      this.body.setAlpha(1 - (deathEffectIndex + 1) / spiderDeathEffectFrames.length);
     }
     ui.status.textContent = `${ui.actor.options[ui.actor.selectedIndex].text} · ${labels[ui.action.value]} · 第 ${frame + 1} / ${frames.length} 帧 · ${playing ? '播放中' : '已暂停'}`;
-    ui.file.textContent = `当前素材：${frames[frame]}`;
+    ui.file.textContent = `当前素材：${frames[frame]}${dying ? `；叠加特效：${spiderDeathEffectFrames[deathEffectIndex]}` : ''}`;
   }
 }
 
