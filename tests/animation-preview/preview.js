@@ -7,6 +7,7 @@ const spider = `${root}pets/red_jade_spider/battle/`;
 const sequence = (base, prefix, count) => Array.from({length: count}, (_, i) => `${base}${prefix}${String(i + 1).padStart(2, '0')}.png`);
 const playerIdle = `${player}player_battle_idle_base.png`;
 const spiderIdle = `${spider}idle/red_jade_spider_battle_idle.png`;
+const webBindFrames = sequence(`${spider}effects/skills/web_bind/`, 'web_bind_', 6);
 // 所有一次性战斗动作都自动添加“待机→动作→待机”，避免切换时跳帧。
 const battleAction = (idle, frames, returnToIdle = true) => [idle, ...frames, ...(returnToIdle ? [idle] : [])];
 const actors = {
@@ -24,6 +25,8 @@ const actors = {
     // 暂按“收拢蓄力→张开释放→回待机”组织现有两张动作，可逐帧检查。
     attack: battleAction(spiderIdle, [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`]),
     defense: battleAction(spiderIdle, [`${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`], false),
+    // 释放后立即收势；后续时间留给飞行、束缚和消散特效。
+    cast: [spiderIdle, `${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`, ...Array(7).fill(spiderIdle)],
     hit: battleAction(spiderIdle, sequence(`${spider}hit/frames/`, 'red_jade_spider_hit_', 3)),
     escape: battleAction(spiderIdle, sequence(`${spider}escape/frames/`, 'red_jade_spider_escape_', 4), false),
   },
@@ -41,17 +44,27 @@ let frame = 0;
 let elapsed = 0;
 let playing = false;
 const currentFrames = () => actors[ui.actor.value][ui.action.value];
+// 普攻蓄力稍停、挥击加快、收势缓冲；滑块统一缩放该节奏。
+const frameDuration = () => (1000 / Number(ui.fps.value)) * (
+  ui.actor.value === 'player' && ui.action.value === 'attack'
+    ? [0.6, 0.4, 0.8, 0.4, 0.4, 0.6, 0.5, 1][frame]
+    : 1
+);
 
 // 更换角色时只列出真实存在的动作，避免把缺图显示成正常动画。
 function refreshActions() {
   const previous = ui.action.value;
-  ui.action.replaceChildren(...Object.keys(actors[ui.actor.value]).map(key => new Option(labels[key], key)));
+  ui.action.replaceChildren(...Object.keys(actors[ui.actor.value]).map(key => new Option(ui.actor.value === 'spider' && key === 'cast' ? '蛛网缚' : labels[key], key)));
   if (actors[ui.actor.value][previous]) ui.action.value = previous;
 }
 function reset() { frame = 0; elapsed = 0; playing = false; }
+function setDefaultSpeed() {
+  ui.fps.value = '6';
+  ui.fpsText.textContent = `${ui.fps.value} 帧/秒`;
+}
 refreshActions();
-ui.actor.addEventListener('change', () => { refreshActions(); reset(); });
-ui.action.addEventListener('change', reset);
+ui.actor.addEventListener('change', () => { refreshActions(); setDefaultSpeed(); reset(); });
+ui.action.addEventListener('change', () => { setDefaultSpeed(); reset(); });
 ui.fps.addEventListener('input', () => { ui.fpsText.textContent = `${ui.fps.value} 帧/秒`; elapsed = 0; });
 document.getElementById('play').onclick = () => { if(frame === currentFrames().length - 1) frame = 0; playing = true; elapsed = 0; };
 document.getElementById('pause').onclick = () => { playing = false; };
@@ -63,7 +76,7 @@ for (const [id, direction] of [['prev', -1], ['next', 1]]) {
 class PreviewScene extends Phaser.Scene {
   preload() {
     // URL 同时作为纹理键，待机等重复引用的文件只加载一次。
-    const files = new Set([...Object.values(actors).flatMap(actions => Object.values(actions).flat()), ...Object.values(effectFiles)]);
+    const files = new Set([...Object.values(actors).flatMap(actions => Object.values(actions).flat()), ...Object.values(effectFiles), ...webBindFrames]);
     this.load.on('loaderror', file => { ui.errors.textContent += `加载失败：${file.key}\n`; });
     for (const url of files) this.load.image(url, url);
   }
@@ -87,9 +100,8 @@ class PreviewScene extends Phaser.Scene {
     // 手动时钟用于逐帧暂停；不按单帧内容裁切缩放，保留真实对齐问题。
     if (playing) {
       elapsed += Math.min(delta, 100);
-      const duration = 1000 / Number(ui.fps.value);
-      while(elapsed >= duration) {
-        elapsed -= duration;
+      while(elapsed >= frameDuration()) {
+        elapsed -= frameDuration();
         if(frame < frames.length - 1) frame++;
         else if(ui.loop.checked) frame = 0;
         else { playing = false; elapsed = 0; break; }
@@ -110,14 +122,28 @@ class PreviewScene extends Phaser.Scene {
     // 特效与角色分层。攻击后半段演示飞行和命中，不将特效烘焙进动作帧。
     const attacking = ui.effects.checked && ui.action.value === 'attack' && frame >= 2;
     this.fx.setVisible(attacking);
+    this.fx.setAlpha(1).setOrigin(0.5);
     if(attacking) {
       const impact = frame === frames.length - 1;
       const isSpider = ui.actor.value === 'spider';
       fit(this.fx, effectFiles[isSpider ? (impact ? 'impact' : 'web') : (impact ? 'hit' : 'wind')], impact ? 170 : 240);
-      const progress = Math.min(1, (frame - 2 + elapsed / (1000 / Number(ui.fps.value))) / Math.max(1, frames.length - 3));
+      const progress = Math.min(1, (frame - 2 + elapsed / frameDuration()) / Math.max(1, frames.length - 3));
       this.fx.setPosition(impact ? 180 : Phaser.Math.Linear(610, 180, progress), 300);
     }
-    ui.status.textContent = `${ui.actor.options[ui.actor.selectedIndex].text} · ${labels[ui.action.value]} · 第 ${frame + 1} / ${frames.length} 帧 · ${playing ? '播放中' : '已暂停'}`;
+    const casting = ui.actor.value === 'spider' && ui.action.value === 'cast';
+    document.getElementById('skill-card').hidden = !casting;
+    if (casting && ui.effects.checked && frame >= 2 && frame <= 8) {
+      const index = Math.min(5, frame - 2);
+      const phase = elapsed / (1000 / Number(ui.fps.value));
+      fit(this.fx, webBindFrames[index], 300);
+      // 使用原图核心坐标作锚点，避免束缚和消散切换时跳动。
+      const anchors = [[.68,.51],[.42,.52],[.25,.48],[.19,.5],[.66,.52],[.63,.54]];
+      const [x,y] = anchors[index];
+      this.fx.setOrigin(ui.flip.checked ? 1-x : x,y);
+      this.fx.setPosition(Phaser.Math.Linear(610,180,Math.min(1,(frame-2+phase)/3)),300);
+      this.fx.setAlpha(frame === 8 ? 1-phase : 1).setVisible(true);
+    }
+    ui.status.textContent = `${ui.actor.options[ui.actor.selectedIndex].text} · ${casting ? '蛛网缚' : labels[ui.action.value]} · 第 ${frame + 1} / ${frames.length} 帧 · ${playing ? '播放中' : '已暂停'}`;
     ui.file.textContent = `当前素材：${frames[frame]}`;
   }
 }

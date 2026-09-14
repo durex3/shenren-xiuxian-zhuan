@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: RPG combat visual-effect animation frame 4 of 6
+Primary request: A Red Jade Spirit Spider's Web Bind skill impact effect.
+Style/medium: polished chibi xianxia RPG game visual effect, crisp layered paint, no character.
+Composition/framing: fixed 512 by 512 transparent canvas. Keep the visual center and scale consistent with prior frames. A complete glowing jade-green hexagonal web strikes and tightens at the left side, centered x=180 y=256. A circular jade impact pulse and small gold motes radiate there; faint silk arrival trails extend to the right.
+Lighting/mood: the brightest frame, crisp jade impact flash.
+Constraints: isolated effect only; transparent background; no ground shadow; no text; no UI; no border; preserve transparent margins; clear right-to-left attack result.
+Avoid: any left-to-right attack, character, spider body, visible target, background, black backdrop, watermark, cropped effect, photorealism, horror, blood.

@@ -36,8 +36,9 @@
     <label>护盾 <select id="shield"><option value="auto">防御时自动显示</option><option value="off">关闭</option><option value="idle">保持</option><option value="hit">受击</option><option value="break">破裂</option></select></label>
     <label>预览大小 <input id="size" type="range" min="180" max="450" value="330"></label>
   </div>
+  <div id="skill-card" hidden><img src="/assets/images/characters/pets/red_jade_spider/battle/effects/skills/web_bind/web_bind_icon.png" width="64" height="64" alt="蛛网缚技能图标" style="vertical-align:middle;border-radius:8px"> <strong>蛛网缚</strong> · 蛛丝发射 → 展开 → 束缚 → 消散</div>
   <div id="stage"></div>
   <p id="status" aria-live="polite">正在加载素材……</p><p id="file"></p><p id="errors"></p>
-  <p>蜘蛛目前提供待机、普通攻击、防御、三帧受击和四帧逃跑；受击结束回到待机，逃跑结束停在离场帧。取消循环可停在最后一帧查看。原图空白保留，不逐帧自动放大。</p>
+  <p>蜘蛛目前提供待机、普通攻击、施法（复用普通攻击动作）、防御、受击和逃跑。取消循环可停在最后一帧查看。原图空白保留，不逐帧自动放大。</p>
 </main><script type="module" src="./preview.js"></script></body>
 </html>

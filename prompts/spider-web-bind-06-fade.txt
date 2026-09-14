@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: RPG combat visual-effect animation frame 6 of 6
+Primary request: A Red Jade Spirit Spider's Web Bind skill fading effect.
+Style/medium: polished chibi xianxia RPG game visual effect, crisp layered paint, no character.
+Composition/framing: fixed 512 by 512 transparent canvas. Keep the visual center and scale consistent with prior frames. The loose remains of a jade-green binding web fade on the left, centered x=180 y=256. Broken translucent silk strands, dim residual glow, and a few drifting gold motes dissolve outward. The right side remains empty.
+Lighting/mood: soft fading jade light.
+Constraints: isolated effect only; transparent background; no ground shadow; no text; no UI; no border; preserve transparent margins.
+Avoid: character, spider body, visible target, background, black backdrop, watermark, cropped effect, photorealism, horror, blood.
