@@ -14,6 +14,7 @@
 ## 文档入口
 
 - [游戏设计文档](docs/game-design.md)：已确认玩法、第一章内容与可调整的默认规则。
+- [第一章剧情与任务设计](docs/chapter1-story-and-quests.md)：青岚问道的故事、人物、地图动线、主支线与任务数据约定。
 - [项目架构](docs/architecture.md)：目录职责、模块之间如何协作、性能与维护约定。
 - [开发计划](docs/development-plan.md)：分阶段交付物、验收标准和实施顺序。
 - [美术资源规范](docs/art-guide.md)：素材清单、推荐规格与替换方法。

@@ -7,6 +7,7 @@ const spider = `${root}pets/red_jade_spider/battle/`;
 const sequence = (base, prefix, count) => Array.from({length: count}, (_, i) => `${base}${prefix}${String(i + 1).padStart(2, '0')}.png`);
 const playerIdle = `${player}player_battle_idle_base.png`;
 const spiderIdle = `${spider}idle/red_jade_spider_battle_idle.png`;
+const spiderAttackFrames = [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`];
 // 所有一次性战斗动作都自动添加“待机→动作→待机”，避免切换时跳帧。
 const battleAction = (idle, frames, returnToIdle = true) => [idle, ...frames, ...(returnToIdle ? [idle] : [])];
 const actors = {
@@ -21,10 +22,11 @@ const actors = {
   },
   spider: {
     idle: [spiderIdle],
-    // 暂按“收拢蓄力→张开释放→回待机”组织现有两张动作，可逐帧检查。
-    attack: battleAction(spiderIdle, [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`]),
+    // 普攻和施法共用身体动作；正式技能通过独立特效、命中表现和音效区分。
+    attack: battleAction(spiderIdle, spiderAttackFrames),
     defense: battleAction(spiderIdle, [`${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`], false),
     hit: battleAction(spiderIdle, sequence(`${spider}hit/frames/`, 'red_jade_spider_hit_', 3)),
+    cast: battleAction(spiderIdle, spiderAttackFrames),
     escape: battleAction(spiderIdle, sequence(`${spider}escape/frames/`, 'red_jade_spider_escape_', 4), false),
   },
 };
