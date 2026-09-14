@@ -24,6 +24,8 @@ const actors = {
     // 暂按“收拢蓄力→张开释放→回待机”组织现有两张动作，可逐帧检查。
     attack: battleAction(spiderIdle, [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`]),
     defense: battleAction(spiderIdle, [`${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`], false),
+    hit: battleAction(spiderIdle, sequence(`${spider}hit/frames/`, 'red_jade_spider_hit_', 3)),
+    escape: battleAction(spiderIdle, sequence(`${spider}escape/frames/`, 'red_jade_spider_escape_', 4), false),
   },
 };
 const labels = {idle:'待机', attack:'普通攻击', defense:'防御', hit:'受击', cast:'基础功法', death:'死亡', escape:'逃跑'};
