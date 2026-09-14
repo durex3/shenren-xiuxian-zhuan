@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>神人修仙传 · 动画测试</title>
+  <style>
+    /* 控件独立于画布，缩小浏览器时自动换行，避免遮住测试角色。 */
+    body { margin: 0; background: #17232a; color: #edf4ee; font: 16px system-ui; }
+    main { max-width: 1100px; margin: auto; padding: 20px; }
+    h1 { font-size: 24px; } p { color: #c2d3d5; line-height: 1.6; }
+    .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 14px 0; }
+    button, select { padding: 8px 12px; font: inherit; }
+    label { display: inline-flex; gap: 6px; align-items: center; }
+    #stage { width: 100%; aspect-ratio: 1000 / 560; }
+    #stage canvas { display: block; }
+    #status, #file { overflow-wrap: anywhere; }
+    #errors { color: #ffb4a7; white-space: pre-wrap; }
+  </style>
+</head>
+<body><main>
+  <h1>主角与赤玉灵蛛 · 动画测试</h1>
+  <p>检查动作、朝向与帧间跳动。此页是独立预览，不计算伤害。特效时机是可调整的演示值。</p>
+  <div class="controls">
+    <label>角色 <select id="actor"><option value="player">主角</option><option value="spider">赤玉灵蛛</option></select></label>
+    <label>动作 <select id="action"></select></label>
+    <label>速度 <input id="fps" type="range" min="1" max="16" value="6"><span id="fpsText">6 帧/秒</span></label>
+    <label><input id="loop" type="checkbox" checked>循环</label>
+    <label><input id="flip" type="checkbox">水平镜像（角色和特效）</label>
+    <label><input id="effects" type="checkbox" checked>显示动作特效</label>
+    <label><input id="ghost" type="checkbox">叠加待机参考</label>
+  </div>
+  <div class="controls">
+    <button id="play">播放</button><button id="pause">暂停</button>
+    <button id="prev">上一帧</button><button id="next">下一帧</button><button id="reset">回到首帧</button>
+    <label>护盾 <select id="shield"><option value="auto">防御时自动显示</option><option value="off">关闭</option><option value="idle">保持</option><option value="hit">受击</option><option value="break">破裂</option></select></label>
+    <label>预览大小 <input id="size" type="range" min="180" max="450" value="330"></label>
+  </div>
+  <div id="stage"></div>
+  <p id="status" aria-live="polite">正在加载素材……</p><p id="file"></p><p id="errors"></p>
+  <p>蜘蛛目前提供待机、普通攻击、防御；受击、死亡和逃跑素材尚未制作。防御最后一帧保持姿势，取消循环可停在最后一帧查看。原图空白保留，不逐帧自动放大。</p>
+</main><script type="module" src="./preview.js"></script></body>
+</html>

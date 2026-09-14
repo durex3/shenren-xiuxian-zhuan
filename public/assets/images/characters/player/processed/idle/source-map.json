@@ -1,0 +1,98 @@
+{
+  "scale": 0.8602150537634409,
+  "source": "AIT20260911005325YZEAOEWO.png",
+  "origin": {
+    "x": 0.5,
+    "y": 0.96875
+  },
+  "directions": {
+    "s": {
+      "sourceDirection": "s",
+      "mirrored": false,
+      "sourceRect": {
+        "y": 263,
+        "x": 966,
+        "h": 279,
+        "w": 117
+      },
+      "frame": "idle_s"
+    },
+    "sw": {
+      "sourceDirection": "sw",
+      "mirrored": false,
+      "sourceRect": {
+        "y": 571,
+        "x": 969,
+        "h": 276,
+        "w": 147
+      },
+      "frame": "idle_sw"
+    },
+    "w": {
+      "sourceDirection": "w",
+      "mirrored": false,
+      "sourceRect": {
+        "y": 879,
+        "x": 971,
+        "h": 275,
+        "w": 138
+      },
+      "frame": "idle_w"
+    },
+    "nw": {
+      "sourceDirection": "nw",
+      "mirrored": false,
+      "sourceRect": {
+        "y": 1188,
+        "x": 970,
+        "h": 271,
+        "w": 138
+      },
+      "frame": "idle_nw"
+    },
+    "n": {
+      "sourceDirection": "n",
+      "mirrored": false,
+      "sourceRect": {
+        "y": 1491,
+        "x": 965,
+        "h": 275,
+        "w": 120
+      },
+      "frame": "idle_n"
+    },
+    "ne": {
+      "sourceDirection": "nw",
+      "mirrored": true,
+      "sourceRect": {
+        "y": 1188,
+        "x": 970,
+        "h": 271,
+        "w": 138
+      },
+      "frame": "idle_ne"
+    },
+    "e": {
+      "sourceDirection": "w",
+      "mirrored": true,
+      "sourceRect": {
+        "y": 879,
+        "x": 971,
+        "h": 275,
+        "w": 138
+      },
+      "frame": "idle_e"
+    },
+    "se": {
+      "sourceDirection": "sw",
+      "mirrored": true,
+      "sourceRect": {
+        "y": 571,
+        "x": 969,
+        "h": 276,
+        "w": 147
+      },
+      "frame": "idle_se"
+    }
+  }
+}

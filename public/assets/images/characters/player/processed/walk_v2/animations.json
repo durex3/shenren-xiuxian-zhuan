@@ -1,0 +1,136 @@
+{
+  "origin": {
+    "x": 0.5,
+    "y": 0.96875
+  },
+  "animations": {
+    "s": {
+      "mirrored": false,
+      "frames": [
+        "walk_s_01",
+        "walk_s_02",
+        "walk_s_03",
+        "walk_s_04",
+        "walk_s_05",
+        "walk_s_06",
+        "walk_s_07",
+        "walk_s_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "sw": {
+      "mirrored": false,
+      "frames": [
+        "walk_sw_01",
+        "walk_sw_02",
+        "walk_sw_03",
+        "walk_sw_04",
+        "walk_sw_05",
+        "walk_sw_06",
+        "walk_sw_07",
+        "walk_sw_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "w": {
+      "mirrored": false,
+      "frames": [
+        "walk_w_01",
+        "walk_w_02",
+        "walk_w_03",
+        "walk_w_04",
+        "walk_w_05",
+        "walk_w_06",
+        "walk_w_07",
+        "walk_w_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "nw": {
+      "mirrored": false,
+      "frames": [
+        "walk_nw_01",
+        "walk_nw_02",
+        "walk_nw_03",
+        "walk_nw_04",
+        "walk_nw_05",
+        "walk_nw_06",
+        "walk_nw_07",
+        "walk_nw_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "n": {
+      "mirrored": false,
+      "frames": [
+        "walk_n_01",
+        "walk_n_02",
+        "walk_n_03",
+        "walk_n_04",
+        "walk_n_05",
+        "walk_n_06",
+        "walk_n_07",
+        "walk_n_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "ne": {
+      "mirrored": true,
+      "frames": [
+        "walk_ne_01",
+        "walk_ne_02",
+        "walk_ne_03",
+        "walk_ne_04",
+        "walk_ne_05",
+        "walk_ne_06",
+        "walk_ne_07",
+        "walk_ne_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "e": {
+      "mirrored": true,
+      "frames": [
+        "walk_e_01",
+        "walk_e_02",
+        "walk_e_03",
+        "walk_e_04",
+        "walk_e_05",
+        "walk_e_06",
+        "walk_e_07",
+        "walk_e_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    },
+    "se": {
+      "mirrored": true,
+      "frames": [
+        "walk_se_01",
+        "walk_se_02",
+        "walk_se_03",
+        "walk_se_04",
+        "walk_se_05",
+        "walk_se_06",
+        "walk_se_07",
+        "walk_se_08"
+      ],
+      "status": "candidate",
+      "frameRate": 8,
+      "repeat": -1
+    }
+  }
+}
