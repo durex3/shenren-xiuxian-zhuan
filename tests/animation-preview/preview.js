@@ -7,21 +7,23 @@ const spider = `${root}pets/red_jade_spider/battle/`;
 const sequence = (base, prefix, count) => Array.from({length: count}, (_, i) => `${base}${prefix}${String(i + 1).padStart(2, '0')}.png`);
 const playerIdle = `${player}player_battle_idle_base.png`;
 const spiderIdle = `${spider}idle/red_jade_spider_battle_idle.png`;
+// 所有一次性战斗动作都自动添加“待机→动作→待机”，避免切换时跳帧。
+const battleAction = (idle, frames, returnToIdle = true) => [idle, ...frames, ...(returnToIdle ? [idle] : [])];
 const actors = {
   player: {
     idle: [playerIdle],
-    attack: sequence(`${player}attack/frames/`, 'player_attack_normal_', 6),
-    defense: [playerIdle, ...sequence(`${player}defense/frames/`, 'player_defense_', 3)],
-    hit: sequence(`${player}hit/frames/`, 'player_hit_', 6),
-    cast: sequence(`${player}cast/frames/`, 'player_cast_', 8),
-    death: sequence(`${player}death/frames/`, 'player_death_', 6),
-    escape: sequence(`${player}escape/frames/`, 'player_escape_', 4),
+    attack: battleAction(playerIdle, sequence(`${player}attack/frames/`, 'player_attack_normal_', 6)),
+    defense: battleAction(playerIdle, sequence(`${player}defense/frames/`, 'player_defense_', 3), false),
+    hit: battleAction(playerIdle, sequence(`${player}hit/frames/`, 'player_hit_', 6)),
+    cast: battleAction(playerIdle, sequence(`${player}cast/frames/`, 'player_cast_', 8)),
+    death: battleAction(playerIdle, sequence(`${player}death/frames/`, 'player_death_', 6), false),
+    escape: battleAction(playerIdle, sequence(`${player}escape/frames/`, 'player_escape_', 4), false),
   },
   spider: {
     idle: [spiderIdle],
     // 暂按“收拢蓄力→张开释放→回待机”组织现有两张动作，可逐帧检查。
-    attack: [spiderIdle, `${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`, spiderIdle],
-    defense: [spiderIdle, `${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`],
+    attack: battleAction(spiderIdle, [`${spider}attack/frames/attack_03.png`, `${spider}attack/frames/attack_02.png`]),
+    defense: battleAction(spiderIdle, [`${spider}defense/frames/defense_01.png`, `${spider}defense/frames/defense_02.png`], false),
   },
 };
 const labels = {idle:'待机', attack:'普通攻击', defense:'防御', hit:'受击', cast:'基础功法', death:'死亡', escape:'逃跑'};
